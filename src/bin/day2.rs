@@ -1,5 +1,5 @@
 #[allow(non_upper_case_globals)]
-const teststr: &'static str = include_str!("day2.txt");
+const teststr: &str = include_str!("day2.txt");
 
 fn main() {
     use std::collections::HashMap;

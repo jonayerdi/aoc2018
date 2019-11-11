@@ -1,5 +1,5 @@
 #[allow(non_upper_case_globals)]
-const teststr: &'static str = include_str!("day2.txt");
+const teststr: &str = include_str!("day2.txt");
 
 fn find_diff1(id_list: &str) -> Option<(&str, &str, usize)> {
     for (id_index, id1) in id_list.lines().enumerate() {

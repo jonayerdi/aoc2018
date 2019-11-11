@@ -107,7 +107,7 @@ where
 }
 
 #[allow(non_upper_case_globals)]
-const teststr: &'static str = include_str!("day3.txt");
+const teststr: &str = include_str!("day3.txt");
 
 fn main() {
     use std::collections::HashSet;
