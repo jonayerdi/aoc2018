@@ -34,7 +34,7 @@ fn try_find_work(nodes: &mut BTreeMap<char, Node>, worker: &mut Option<char>) {
                     *node.1 = Node::Ongoing(*remain);
                 }
                 Some(*node.0)
-            },
+            }
             None => None,
         };
     }
@@ -58,7 +58,7 @@ fn try_handle_work(nodes: &mut BTreeMap<char, Node>, worker: &mut Option<char>) 
                     });
                     *worker = None;
                 }
-            },
+            }
             _ => panic!("invalid node state"),
         }
     }
