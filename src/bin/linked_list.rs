@@ -248,3 +248,8 @@ mod tests {
         assert_eq!(items, vec![1, 2, 3, 4, 5, 6]);
     }
 }
+
+#[allow(dead_code)]
+fn main() {
+    unimplemented!()
+}
