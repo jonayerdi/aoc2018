@@ -103,7 +103,7 @@ fn main() {
                 }
                 _ => {
                     *node = Node::Unavailable(BTreeSet::from_iter(
-                        [requirement].into_iter().map(|&c| c),
+                        [requirement].iter().map(|&c| c),
                     ));
                 }
             }

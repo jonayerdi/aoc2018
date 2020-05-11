@@ -48,13 +48,20 @@ fn next_generation(state: &mut [(i64, bool)], rules: &[[bool; RULE_LENGTH]]) {
 
 fn get_offset(previous_state: &[(i64, bool)], state: &[(i64, bool)]) -> Option<i64> {
     let first_plant_state = state.iter().enumerate().find(|(_, (_, plant))| *plant);
-    let first_plant_prev = previous_state.iter().enumerate().find(|(_, (_, plant))| *plant);
+    let first_plant_prev = previous_state
+        .iter()
+        .enumerate()
+        .find(|(_, (_, plant))| *plant);
     if let (Some((index, _)), Some((index_prev, _))) = (first_plant_state, first_plant_prev) {
         let offset = index as i64 - index_prev as i64;
         let mut states = if offset >= 0 {
-            previous_state.iter().zip(state.iter().skip(offset as usize))
+            previous_state
+                .iter()
+                .zip(state.iter().skip(offset as usize))
         } else {
-            state.iter().zip(previous_state.iter().skip(-offset as usize))
+            state
+                .iter()
+                .zip(previous_state.iter().skip(-offset as usize))
         };
         if states.find(|((_, p1), (_, p2))| p1 != p2).is_none() {
             Some(offset)
