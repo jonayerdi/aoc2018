@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashMap};
+use std::collections::{BinaryHeap, HashMap, HashSet};
 
 type Position = (usize, usize);
 
@@ -381,23 +381,48 @@ fn parse_map(map: &str) -> (HashMap<Position, Connections>, BinaryHeap<Cart>) {
 
 fn main() {
     let (tracks, mut carts) = parse_map(teststr);
-    let mut carts_next = BinaryHeap::with_capacity(carts.len());
+    let mut carts_next = Vec::with_capacity(carts.len());
     let mut step = 1usize;
+    let mut to_remove = HashSet::with_capacity(16);
     loop {
         while let Some(mut cart) = carts.pop() {
+            if to_remove.remove(&cart.position) {
+                continue;
+            }
             cart.next_step(&tracks);
-            for other in carts.iter().chain(carts_next.iter()) {
+            let mut removed = false;
+            for other in carts.iter() {
                 if &cart == other {
-                    println!(
-                        "Crashed carts at step {}, position ({},{})",
-                        step, cart.position.0, cart.position.1
-                    );
-                    return;
+                    to_remove.insert(other.position);
+                    removed = true;
+                    break;
                 }
             }
-            carts_next.push(cart);
+            for i in 0..carts_next.len() {
+                if cart == carts_next[i] {
+                    carts_next.remove(i);
+                    removed = true;
+                    break;
+                }
+            }
+            if !removed {
+                carts_next.push(cart);
+            }
         }
-        std::mem::swap(&mut carts, &mut carts_next);
+        while let Some(cart) = carts_next.pop() {
+            carts.push(cart);
+        }
+        if carts.len() < 2 {
+            if let Some(cart) = carts.pop() {
+                println!(
+                    "Last car remaining at step {}, position ({},{})",
+                    step, cart.position.0, cart.position.1
+                );
+            } else {
+                println!("All cars crashed at step {}", step);
+            }
+            return;
+        }
         step += 1;
     }
 }
