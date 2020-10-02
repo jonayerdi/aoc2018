@@ -102,9 +102,8 @@ fn main() {
                     requirements.insert(requirement);
                 }
                 _ => {
-                    *node = Node::Unavailable(BTreeSet::from_iter(
-                        [requirement].iter().map(|&c| c),
-                    ));
+                    *node =
+                        Node::Unavailable(BTreeSet::from_iter([requirement].iter().map(|&c| c)));
                 }
             }
         });
