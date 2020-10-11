@@ -1,3 +1,7 @@
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
+
 type Range = std::ops::Range<usize>;
 type Position = (usize, usize);
 
@@ -5,11 +9,10 @@ fn manhatan(p1: Position, p2: Position) -> usize {
     p1.0.max(p2.0) - p1.0.min(p2.0) + p1.1.max(p2.1) - p1.1.min(p2.1)
 }
 
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day6.txt");
-
-fn main() {
-    let dangers = teststr
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day6.txt"))?.read_to_string(&mut input)?;
+    let dangers = input
         .lines()
         .map(|line| {
             let mut nums = line.split(',').map(|n| n.trim().parse::<usize>().unwrap());
@@ -46,4 +49,5 @@ fn main() {
     }
 
     println!("{}", areas);
+    Ok(())
 }

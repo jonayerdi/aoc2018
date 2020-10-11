@@ -1,5 +1,6 @@
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day12.txt");
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
 
 const RULE_LEFT: usize = 2;
 const RULE_RIGHT: usize = 2;
@@ -77,8 +78,10 @@ fn get_offset(previous_state: &[(i64, bool)], state: &[(i64, bool)]) -> Option<i
     }
 }
 
-fn main() {
-    let mut lines = teststr.lines();
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day12.txt"))?.read_to_string(&mut input)?;
+    let mut lines = input.lines();
     // Read initial state
     let state = lines
         .next()
@@ -137,5 +140,6 @@ fn main() {
         .iter()
         .filter(|(_, plant)| *plant)
         .fold(0, |sum, (num, _)| sum + num + shift);
-    println!("Result: {}", result);
+    println!("{}", result);
+    Ok(())
 }

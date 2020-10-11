@@ -1,12 +1,12 @@
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap};
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
 
 type Position = (usize, usize);
 
 type Tracks = HashMap<Position, Connections>;
-
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day13.txt");
 
 #[repr(u8)]
 #[derive(Clone, Copy)]
@@ -379,26 +379,23 @@ fn parse_map(map: &str) -> (HashMap<Position, Connections>, BinaryHeap<Cart>) {
     (tracks, carts)
 }
 
-fn main() {
-    let (tracks, mut carts) = parse_map(teststr);
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day13.txt"))?.read_to_string(&mut input)?;
+    let (tracks, mut carts) = parse_map(&input);
     let mut carts_next = BinaryHeap::with_capacity(carts.len());
-    let mut step = 1usize;
     loop {
         while let Some(mut cart) = carts.pop() {
             cart.next_step(&tracks);
             for other in carts.iter().chain(carts_next.iter()) {
                 if &cart == other {
-                    println!(
-                        "Crashed carts at step {}, position ({},{})",
-                        step, cart.position.0, cart.position.1
-                    );
-                    return;
+                    println!("{},{}", cart.position.0, cart.position.1);
+                    return Ok(());
                 }
             }
             carts_next.push(cart);
         }
         std::mem::swap(&mut carts, &mut carts_next);
-        step += 1;
     }
 }
 

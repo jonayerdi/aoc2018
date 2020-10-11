@@ -1,3 +1,8 @@
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
+
 type Range = std::ops::Range<usize>;
 type Position = (usize, usize);
 
@@ -33,13 +38,10 @@ where
     )
 }
 
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day6.txt");
-
-fn main() {
-    use std::collections::HashMap;
-
-    let dangers = teststr
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day6.txt"))?.read_to_string(&mut input)?;
+    let dangers = input
         .lines()
         .map(|line| {
             let mut nums = line.split(',').map(|n| n.trim().parse::<usize>().unwrap());
@@ -98,4 +100,5 @@ fn main() {
     if let Some(largest) = largest {
         println!("{}", largest.1);
     }
+    Ok(())
 }

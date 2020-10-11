@@ -1,3 +1,7 @@
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
+
 enum Cell {
     Empty,
     Claimed(usize),
@@ -106,15 +110,14 @@ where
     chars.parse::<usize>().unwrap()
 }
 
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day3.txt");
-
-fn main() {
+fn main() -> io::Result<()> {
     use std::collections::HashSet;
     let mut map_size = (0, 0);
     let mut claims = Vec::with_capacity(1234);
     let mut no_overlaps = HashSet::with_capacity(1234);
-    teststr.lines().for_each(|line| {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day3.txt"))?.read_to_string(&mut input)?;
+    input.lines().for_each(|line| {
         let claim = Claim::parse(line);
         if claim.bottom_right.0 >= map_size.0 {
             map_size.0 = claim.bottom_right.0 + 1;
@@ -147,4 +150,5 @@ fn main() {
     for id in no_overlaps {
         println!("{}", id);
     }
+    Ok(())
 }

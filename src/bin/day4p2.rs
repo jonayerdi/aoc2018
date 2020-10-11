@@ -1,3 +1,8 @@
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
+
 enum RecordType {
     Shift(usize),
     Sleep,
@@ -115,12 +120,10 @@ where
     chars.parse::<usize>().unwrap()
 }
 
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day4.txt");
-
-fn main() {
-    use std::collections::HashMap;
-    let mut records: Vec<_> = teststr.lines().map(|line| Record::parse(line)).collect();
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day4.txt"))?.read_to_string(&mut input)?;
+    let mut records: Vec<_> = input.lines().map(|line| Record::parse(line)).collect();
     records.sort_unstable();
     let mut events = HashMap::with_capacity(32);
     let mut guard = 0;
@@ -160,5 +163,7 @@ fn main() {
         })
         .max_by(|(_, (_, v1)), (_, (_, v2))| v1.cmp(v2))
         .unwrap();
-    println!("{} * {} = {}", guard, max_minute, guard * max_minute);
+    //println!("{} * {} = {}", guard, max_minute, guard * max_minute);
+    println!("{}", guard * max_minute);
+    Ok(())
 }

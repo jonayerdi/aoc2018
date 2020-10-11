@@ -1,12 +1,14 @@
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day7.txt");
+use std::collections::{BTreeMap, BTreeSet};
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
 
-fn main() {
-    use std::collections::btree_map::BTreeMap;
-    use std::collections::btree_set::BTreeSet;
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day7.txt"))?.read_to_string(&mut input)?;
     let mut nodes = BTreeMap::new();
     let mut result = Vec::new();
-    teststr
+    input
         .lines()
         .map(|line| {
             let mut words = line.split(' ');
@@ -35,4 +37,5 @@ fn main() {
             .flatten()
             .collect::<String>()
     );
+    Ok(())
 }

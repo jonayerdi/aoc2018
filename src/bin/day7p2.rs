@@ -1,7 +1,11 @@
 use std::collections::btree_map::BTreeMap;
 use std::collections::btree_set::BTreeSet;
+use std::fs::File;
+use std::io::{self, Read};
 use std::iter::FromIterator;
+use std::path::PathBuf;
 
+#[allow(unused_macros)]
 macro_rules! print_state {
     ($nodes:expr, $workers:expr, $result:expr) => {
         for worker in $workers.iter() {
@@ -71,17 +75,17 @@ enum Node {
     Ongoing(usize),
 }
 
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day7.txt");
-
 const WORKERS: usize = 5;
 
-fn main() {
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day7.txt"))?.read_to_string(&mut input)?;
+
     let mut nodes = BTreeMap::new();
     let mut workers: Vec<_> = (0..WORKERS).map(|_| None).collect();
     let mut result = 0;
 
-    teststr
+    input
         .lines()
         .map(|line| {
             let mut words = line.split(' ');
@@ -115,10 +119,11 @@ fn main() {
         for worker in workers.iter_mut() {
             try_find_work(&mut nodes, worker);
         }
-        print_state!(nodes, workers, result);
+        //print_state!(nodes, workers, result);
         result += 1;
     }
 
     result -= 1;
     println!("{}", result);
+    Ok(())
 }

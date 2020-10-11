@@ -1,5 +1,6 @@
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day12.txt");
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
 
 const RULE_LEFT: usize = 2;
 const RULE_RIGHT: usize = 2;
@@ -10,6 +11,7 @@ const GENERATIONS: usize = 20;
 const MAX_LEFT_EXPANSION: usize = GENERATIONS * RULE_RIGHT;
 const MAX_RIGHT_EXPANSION: usize = GENERATIONS * RULE_LEFT;
 
+#[allow(dead_code)]
 fn print_state<'a, I>(state: I)
 where
     I: Iterator<Item = &'a (i32, bool)>,
@@ -55,8 +57,10 @@ fn next_generation(state: &mut [(i32, bool)], rules: &[[bool; RULE_LENGTH]]) {
     }
 }
 
-fn main() {
-    let mut lines = teststr.lines();
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day12.txt"))?.read_to_string(&mut input)?;
+    let mut lines = input.lines();
     // Read initial state
     let state = lines
         .next()
@@ -91,16 +95,17 @@ fn main() {
         .map(|(rule, _)| rule)
         .collect::<Vec<_>>();
     // Print initial state
-    print_state(state.iter());
+    //print_state(state.iter());
     // Iterate over generations
     for _ in 0..GENERATIONS {
         next_generation(&mut state, &rules);
-        print_state(state.iter());
+        //print_state(state.iter());
     }
     // Calculate the sum of pot numbers with plants
     let result = state
         .iter()
         .filter(|(_, plant)| *plant)
         .fold(0, |sum, (num, _)| sum + num);
-    println!("Result: {}", result);
+    println!("{}", result);
+    Ok(())
 }

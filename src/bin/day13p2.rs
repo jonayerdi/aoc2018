@@ -1,12 +1,12 @@
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
 
 type Position = (usize, usize);
 
 type Tracks = HashMap<Position, Connections>;
-
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day13.txt");
 
 #[repr(u8)]
 #[derive(Clone, Copy)]
@@ -379,10 +379,11 @@ fn parse_map(map: &str) -> (HashMap<Position, Connections>, BinaryHeap<Cart>) {
     (tracks, carts)
 }
 
-fn main() {
-    let (tracks, mut carts) = parse_map(teststr);
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day13.txt"))?.read_to_string(&mut input)?;
+    let (tracks, mut carts) = parse_map(&input);
     let mut carts_next = Vec::with_capacity(carts.len());
-    let mut step = 1usize;
     let mut to_remove = HashSet::with_capacity(16);
     loop {
         while let Some(mut cart) = carts.pop() {
@@ -414,16 +415,12 @@ fn main() {
         }
         if carts.len() < 2 {
             if let Some(cart) = carts.pop() {
-                println!(
-                    "Last car remaining at step {}, position ({},{})",
-                    step, cart.position.0, cart.position.1
-                );
+                println!("{},{}", cart.position.0, cart.position.1);
             } else {
-                println!("All cars crashed at step {}", step);
+                println!("All cars crashed");
             }
-            return;
+            return Ok(());
         }
-        step += 1;
     }
 }
 

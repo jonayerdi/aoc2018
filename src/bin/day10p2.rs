@@ -1,4 +1,7 @@
+use std::fs::File;
+use std::io::{self, Read};
 use std::ops::AddAssign;
+use std::path::PathBuf;
 
 #[derive(Clone, Copy, PartialEq)]
 struct Point {
@@ -43,15 +46,14 @@ fn height(positions: &[Point]) -> i32 {
     limits.1 - limits.0
 }
 
-#[allow(non_upper_case_globals)]
-const teststr: &str = include_str!("day10.txt");
-
 const MAX_ITERATIONS: usize = 11000;
 
-fn main() {
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day10.txt"))?.read_to_string(&mut input)?;
     let mut positions = Vec::with_capacity(32);
     let mut velocities = Vec::with_capacity(32);
-    teststr
+    input
         .lines()
         .map(|line| {
             let mut chars = line.chars();
@@ -86,4 +88,5 @@ fn main() {
                 *position += *velocity;
             });
     }
+    Ok(())
 }

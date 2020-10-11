@@ -1,12 +1,18 @@
-const GRID_SERIAL: usize = 8141;
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
+
 const GRID_SIZE: (usize, usize) = (300, 300);
 const SQUARE_SIZE: (usize, usize) = (3, 3);
 
-fn main() {
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day11.txt"))?.read_to_string(&mut input)?;
+    let grid_serial = input.parse::<usize>().unwrap();
     let grid = (1..=GRID_SIZE.1)
         .map(|y| {
             (1..=GRID_SIZE.0)
-                .map(|x| ((((((x + 10) * y) + GRID_SERIAL) * (x + 10)) / 100) % 10) as i32 - 5)
+                .map(|x| ((((((x + 10) * y) + grid_serial) * (x + 10)) / 100) % 10) as i32 - 5)
                 .collect::<Vec<_>>()
         })
         .collect::<Vec<_>>();
@@ -23,4 +29,5 @@ fn main() {
         }
     }
     println!("{},{}", max_square.0, max_square.1);
+    Ok(())
 }

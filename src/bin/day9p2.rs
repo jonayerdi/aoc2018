@@ -1,6 +1,10 @@
 mod linked_list;
 use linked_list::{LinkedList, LinkedListIndex};
 
+use std::fs::File;
+use std::io::{self, Read};
+use std::path::PathBuf;
+
 struct Game {
     pub player: usize,
     pub scores: Vec<usize>,
@@ -35,12 +39,15 @@ impl Game {
     }
 }
 
-const PLAYERS: usize = 448;
-const TURNS: usize = 7162800;
-
-fn main() {
-    let mut game = Game::new(PLAYERS);
-    (0..TURNS).for_each(|_| game.next());
+fn main() -> io::Result<()> {
+    let mut input = String::new();
+    File::open(PathBuf::from("data").join("day9.txt"))?.read_to_string(&mut input)?;
+    let mut words = input.split(" ");
+    let players = words.nth(0).unwrap().parse::<usize>().unwrap();
+    let turns = words.nth(5).unwrap().parse::<usize>().unwrap() * 100;
+    let mut game = Game::new(players);
+    (0..turns).for_each(|_| game.next());
     let high_score = game.scores.iter().fold(&0, |hi, s| hi.max(s));
     println!("{}", high_score);
+    Ok(())
 }
