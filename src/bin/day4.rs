@@ -159,7 +159,7 @@ fn main() -> io::Result<()> {
             if let Some(days) = events.get(guard) {
                 days.iter().filter(|asleep| asleep.contains(&hour)).count()
             } else {
-                panic!("Guard #{} has no entry in events list")
+                panic!("Guard #{} has no entry in events list", guard)
             }
         })
         .collect();
