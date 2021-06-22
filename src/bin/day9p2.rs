@@ -1,23 +1,22 @@
-mod linked_list;
-use linked_list::{LinkedList, LinkedListIndex};
+use linked_list::{LinkedList, LinkedListIndexMut};
 
 use std::fs::File;
 use std::io::{self, Read};
 use std::path::PathBuf;
+use std::{iter, mem};
 
 struct Game {
     pub player: usize,
     pub scores: Vec<usize>,
-    pub position: LinkedListIndex<usize>,
+    pub position: LinkedListIndexMut<'static, usize>,
     pub next_value: usize,
     pub marbles: LinkedList<usize>,
 }
 
 impl Game {
     fn new(players: usize) -> Game {
-        let mut ll = LinkedList::new();
-        let mut index = ll.first();
-        index.insert_after(0);
+        let mut ll = iter::once(0).collect::<LinkedList<_>>();
+        let index = unsafe { mem::transmute(ll.first_mut().unwrap()) };
         Game {
             player: 0,
             scores: (0..players).map(|_| 0).collect(),
@@ -32,7 +31,7 @@ impl Game {
             self.position.insert_after(self.next_value)
         } else {
             self.position.nth_back(6).unwrap();
-            self.scores[self.player] += self.next_value + self.position.remove();
+            self.scores[self.player] += self.next_value + self.position.remove_advance();
         }
         self.player = (self.player + 1) % self.scores.len();
         self.next_value += 1;

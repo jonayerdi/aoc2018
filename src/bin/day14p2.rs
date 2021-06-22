@@ -1,7 +1,7 @@
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::{self, Read};
 use std::path::PathBuf;
-use std::collections::HashSet;
 
 fn digit(ascii: u8) -> u8 {
     ascii - ('0' as u8)
